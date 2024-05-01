@@ -13,6 +13,9 @@
 import { useChartStore } from "../../stores/ChartStore";
 import { DataProps } from "../../utils/types";
 
+// HACK: No typescript declaration file available: https://github.com/apexcharts/vue3-apexcharts/issues/2
+// eslint-disable-next-line
+// @ts-ignore
 import VueApexCharts from "vue3-apexcharts";
 import WhiteBlock from "./WhiteBlock.vue";
 

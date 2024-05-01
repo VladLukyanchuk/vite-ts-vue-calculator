@@ -8,7 +8,7 @@
 import { withDefaults } from "vue";
 import { ButtonProps } from "../../utils/types";
 
-const props = withDefaults(defineProps<ButtonProps>(), {
+withDefaults(defineProps<ButtonProps>(), {
   type: "blue",
 });
 </script>

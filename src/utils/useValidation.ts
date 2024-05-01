@@ -1,5 +1,5 @@
 import { type ZodTypeAny, z } from "zod";
-import { get, groupBy } from "lodash-es";
+import { get, groupBy } from "lodash";
 import { ref, watch, toValue, type MaybeRefOrGetter } from "vue";
 
 export default function <T extends ZodTypeAny>(
@@ -64,8 +64,19 @@ export default function <T extends ZodTypeAny>(
     }
   };
 
-  const getError = (path: string) =>
-    get(errors.value, `${path.replace(".", ",")}.0.message`);
+  const getError = (path: string): string | undefined => {
+    const errorPath = path.split(".").join(","); // Перетворення крапок у коми
+    const errorMessage = get(errors.value, `${errorPath}.0.message`);
+
+    // Перевіряємо, чи errorMessage не є масивом
+    if (Array.isArray(errorMessage)) {
+      // Вибираємо перше повідомлення про помилку, якщо воно існує
+      return errorMessage.length > 0 ? errorMessage[0].message : undefined;
+    }
+
+    // Повертаємо рядок або undefined
+    return errorMessage || undefined;
+  };
 
   if (opts.mode === "eager") {
     validationWatch();
