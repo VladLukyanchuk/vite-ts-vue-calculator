@@ -44,7 +44,11 @@ function getTotalPerYear(year: number): number {
     return 0;
   }
   return props.data.series.reduce((accumulator, currentValue) => {
-    return accumulator + currentValue.data[year - 1];
+    const currentSum =
+      currentValue.data[year - 1] !== undefined
+        ? currentValue.data[year - 1]
+        : 0;
+    return accumulator + currentSum;
   }, 0);
 }
 </script>

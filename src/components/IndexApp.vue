@@ -178,11 +178,6 @@ import Table from "./UI/Table.vue";
 
 const chartStore = useChartStore();
 
-const ReplenishmentsSchema = z.object({
-  sum: z.union([z.null(), z.number().gte(1)]),
-  period: z.union([z.null(), z.number()]),
-});
-
 const InterestAccrualSchema = z.object({
   percent: z.number().gte(1),
   period: z.number({ invalid_type_error: "Required field" }),
@@ -191,7 +186,6 @@ const InterestAccrualSchema = z.object({
 const FormSchema = z.object({
   initialAmount: z.number().gte(1),
   currency: z.number(),
-  replenishments: ReplenishmentsSchema,
   interestAccrual: InterestAccrualSchema,
   years: z.number().gte(1),
 });
@@ -200,8 +194,8 @@ const form = ref<Form>({
   initialAmount: 100,
   currency: 1,
   replenishments: {
-    sum: 10,
-    period: 12,
+    sum: null,
+    period: 1,
   },
   interestAccrual: {
     percent: 10,
@@ -287,18 +281,12 @@ const chartUpdate = ref<number>(1);
 
 function calculateCompoundInterest(form: Form): Result | null {
   const { initialAmount, interestAccrual, replenishments, years } = form;
-  const { sum: replenishSum, period: replenishPeriod } = replenishments;
+  let { sum: replenishSum, period: replenishPeriod } = replenishments;
   const { percent, period: accrualPeriod } = interestAccrual;
 
-  // Перевірка вхідних даних на коректність
-  if (
-    !initialAmount ||
-    !percent ||
-    !accrualPeriod ||
-    !years ||
-    !replenishSum ||
-    !replenishPeriod
-  ) {
+  const hasReplenish = replenishSum && replenishPeriod;
+
+  if (!initialAmount || !percent || !accrualPeriod || !years) {
     return null;
   }
 
@@ -325,8 +313,11 @@ function calculateCompoundInterest(form: Form): Result | null {
   };
   let refillsSum = 0;
 
-  const testval =
-    accrualPeriod > replenishPeriod ? accrualPeriod / replenishPeriod : -1;
+  let replenishPeriodByAccrual = -1;
+  if (hasReplenish) {
+    replenishPeriodByAccrual =
+      accrualPeriod > replenishPeriod ? accrualPeriod / replenishPeriod : -1;
+  }
 
   // Обчислення суми з основної суми та відсотків за складним процентом
   for (let i = 0; i < years; i++) {
@@ -341,12 +332,8 @@ function calculateCompoundInterest(form: Form): Result | null {
       result.finalBalance += currentInterest;
       percentForChart += currentInterest;
 
-      if (!replenishSum) {
-        continue;
-      }
-
-      if (testval !== -1) {
-        if (Number.isInteger(j / testval)) {
+      if (hasReplenish && replenishPeriodByAccrual !== -1) {
+        if (Number.isInteger(j / replenishPeriodByAccrual)) {
           refillsSum += replenishSum;
           result.totalRefills += replenishSum;
           refillsObject.data.push(Math.round(result.totalRefills));
@@ -356,7 +343,7 @@ function calculateCompoundInterest(form: Form): Result | null {
         percentForChart += refillsSum * (percent / 100);
       }
 
-      if (testval === -1) {
+      if (hasReplenish && replenishPeriodByAccrual === -1) {
         result.totalRefills += replenishSum * (replenishPeriod / accrualPeriod);
         refillsSum += replenishSum * (replenishPeriod / accrualPeriod);
         refillsObject.data.push(Math.round(result.totalRefills));
