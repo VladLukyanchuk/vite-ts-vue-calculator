@@ -1,0 +1,15 @@
+@import "./global.scss";
+@import "./normalize.scss";
+@import "./ui.scss";
+@import "./flex.scss";
+@import "./transitions.scss";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--background-color);
+  color: var(--font-color);
+  min-height: 100vh;
+  background-color: var(--blue-5);
+}

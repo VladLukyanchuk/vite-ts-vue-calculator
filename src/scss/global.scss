@@ -1,0 +1,46 @@
+:root {
+  // COLORS
+
+  // -- Neutral colors
+
+  --mentol: #32d583;
+
+  --black: #000;
+  --white: #fff;
+
+  // -- Primary colors
+
+  --blue-grey-5: #fcfcfd;
+  --blue-grey-10: #f8f9fc;
+  --blue-grey-20: #cfd1e4;
+  --blue-grey-40: #b1b6d5;
+  --blue-grey-60: #8188ad;
+  --blue-grey-80: #3c4471;
+  --blue-grey-100: #111321;
+
+  --blue-5: #f5faff;
+  --blue-10: #dceeff;
+  --blue-20: #b2ddff;
+  --blue-40: #53b1fd;
+  --blue-60: #1570ef;
+  --blue-80: #175cd3;
+  --blue-100: #194185;
+
+  --purple-20: #d9d6fe;
+  --purple-60: #7a5af8;
+  --purple-100: #5925dc;
+
+  --red-20: #fddcab;
+  --red-40: #fb6514;
+  --red-60: #ec4a0a;
+  --red-100: #c4320a;
+}
+
+.line-clamp {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
