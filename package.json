@@ -22,9 +22,12 @@
   "devDependencies": {
     "@types/lodash": "^4.17.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "@vitest/ui": "^3.0.7",
+    "@vue/test-utils": "^2.4.6",
     "sass": "^1.74.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vitest": "^3.0.7",
     "vue-tsc": "^2.0.6"
   }
 }
