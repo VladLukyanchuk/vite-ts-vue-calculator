@@ -38,6 +38,7 @@
             <TextInput
               :error="!!getError('replenishments.sum')"
               v-model="form.replenishments.sum"
+              @focus="clearZeroOnFocus"
             />
           </FormLabel>
           <FormLabel text="Period" :error="getError('replenishments.period')">
@@ -167,6 +168,7 @@ import useValidation from "../utils/useValidation";
 import { useChartStore } from "../stores/ChartStore";
 import { getNumberWithSpaces } from "../utils/getNumberWithSpaces.ts";
 import { getCurrencySymbol } from "../utils/getCurrencySymbol.ts";
+import { clearZeroOnFocus } from "../utils/clearZeroOnFocus.ts";
 
 import WhiteBlock from "./UI/WhiteBlock.vue";
 import TextInput from "./UI/TextInput.vue";
@@ -194,7 +196,7 @@ const form = ref<Form>({
   initialAmount: 100,
   currency: 1,
   replenishments: {
-    sum: null,
+    sum: 0,
     period: 1,
   },
   interestAccrual: {
