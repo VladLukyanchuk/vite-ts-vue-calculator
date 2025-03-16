@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="content">
-      <Form @submitForm="calculate" />
+      <Form @submitForm="calculate" @resetForm="result = null" />
       <Transition>
         <div v-if="result" class="total-block">
           <div ref="total" class="total-block__head">

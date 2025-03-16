@@ -86,7 +86,7 @@
     </FormLabel>
 
     <template #buttons>
-      <FormButton type="danger">Reset</FormButton>
+      <FormButton @click="handleReset" type="danger">Reset</FormButton>
       <FormButton @click="handleSubmit">Calculate</FormButton>
     </template>
   </WhiteBlock>
@@ -106,7 +106,7 @@ import { periodOptions } from "../constants/constants";
 import { z } from "zod";
 import { currencyOptions } from "../constants/constants";
 
-const emit = defineEmits(["submitForm"]);
+const emit = defineEmits(["submitForm", "resetForm"]);
 
 //STATE
 const form = ref<Form>({
@@ -138,6 +138,25 @@ const FormSchema = z.object({
 const { validate, isValid, getError } = useValidation(FormSchema, form, {
   mode: "lazy",
 });
+
+//RESET
+function handleReset() {
+  form.value = {
+    initialAmount: 100,
+    currency: 1,
+    replenishments: {
+      sum: 0,
+      period: 1,
+    },
+    interestAccrual: {
+      percent: 10,
+      period: 1,
+    },
+    years: 5,
+  };
+
+  emit("resetForm");
+}
 
 //SUBMIT
 async function handleSubmit() {
