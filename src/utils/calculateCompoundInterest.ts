@@ -1,4 +1,4 @@
-import { currencyOptions } from "../constants/constants";
+import { CURRENCY_OPTIONS } from "../constants/constants";
 import { getCurrencySymbol } from "./getCurrencySymbol";
 import { Form, Result, Series } from "./types";
 
@@ -81,7 +81,7 @@ export function calculateCompoundInterest(form: Form): Result | null {
   result.finalBalance = Math.round(result.finalBalance + refillsSum);
   result.totalRefills = Math.round(result.totalRefills);
   result.totalPercent = Math.round(result.totalPercent);
-  result.currency = getCurrencySymbol(form.currency, currencyOptions);
+  result.currency = getCurrencySymbol(form.currency, CURRENCY_OPTIONS);
   result.series = [startSumObj, refillsObject, percentObject];
 
   return result;

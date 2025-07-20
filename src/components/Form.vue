@@ -19,7 +19,7 @@
       <FormLabel required text="Currency" :error="getError('currency')">
         <FormSelect
           :error="!!getError('currency')"
-          :options="currencyOptions"
+          :options="CURRENCY_OPTIONS"
           v-model="form.currency"
         />
       </FormLabel>
@@ -40,7 +40,7 @@
         <FormSelect
           label="Period"
           :error="!!getError('replenishments.period')"
-          :options="periodOptions"
+          :options="PERIOD_OPTIONS"
           v-model="form.replenishments.period"
         />
       </FormLabel>
@@ -68,7 +68,7 @@
         <FormSelect
           :error="!!getError('interestAccrual.period')"
           label="Period"
-          :options="periodOptions"
+          :options="PERIOD_OPTIONS"
           v-model="form.interestAccrual.period"
         />
       </FormLabel>
@@ -102,26 +102,15 @@ import FormButton from "./UI/FormButton.vue";
 import FormSelect from "./UI/FormSelect.vue";
 import FormLabel from "./UI/FormLabel.vue";
 import { clearZeroOnFocus } from "../utils/clearZeroOnFocus";
-import { periodOptions } from "../constants/constants";
+import { BASE_FORM, PERIOD_OPTIONS } from "../constants/constants";
 import { z } from "zod";
-import { currencyOptions } from "../constants/constants";
+import { CURRENCY_OPTIONS } from "../constants/constants";
+import { cloneDeep } from "lodash";
 
 const emit = defineEmits(["submitForm", "resetForm"]);
 
 //STATE
-const form = ref<Form>({
-  initialAmount: 100,
-  currency: 1,
-  replenishments: {
-    sum: 0,
-    period: 1,
-  },
-  interestAccrual: {
-    percent: 10,
-    period: 1,
-  },
-  years: 5,
-});
+const form = ref<Form>(cloneDeep(BASE_FORM));
 
 //VALIDATION
 const InterestAccrualSchema = z.object({
@@ -141,19 +130,7 @@ const { validate, isValid, getError } = useValidation(FormSchema, form, {
 
 //RESET
 function handleReset() {
-  form.value = {
-    initialAmount: 100,
-    currency: 1,
-    replenishments: {
-      sum: 0,
-      period: 1,
-    },
-    interestAccrual: {
-      percent: 10,
-      period: 1,
-    },
-    years: 5,
-  };
+  form.value = cloneDeep(BASE_FORM);
 
   emit("resetForm");
 }

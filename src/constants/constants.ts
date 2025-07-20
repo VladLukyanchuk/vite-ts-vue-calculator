@@ -1,10 +1,10 @@
-import { FormSelectOption } from "../utils/types";
+import { Form, FormSelectOption } from "../utils/types";
 
 export interface CurrencyOption extends FormSelectOption {
   symbol: string;
 }
 
-export const currencyOptions: CurrencyOption[] = [
+export const CURRENCY_OPTIONS: CurrencyOption[] = [
   {
     id: 1,
     label: "USD",
@@ -22,7 +22,7 @@ export const currencyOptions: CurrencyOption[] = [
   },
 ];
 
-export const periodOptions: FormSelectOption[] = [
+export const PERIOD_OPTIONS: FormSelectOption[] = [
   {
     id: 1,
     label: "Every Year",
@@ -40,3 +40,17 @@ export const periodOptions: FormSelectOption[] = [
     label: "Every Month",
   },
 ];
+
+export const BASE_FORM: Form = {
+  initialAmount: 100,
+  currency: 1,
+  replenishments: {
+    sum: 0,
+    period: 1,
+  },
+  interestAccrual: {
+    percent: 10,
+    period: 1,
+  },
+  years: 5,
+};
