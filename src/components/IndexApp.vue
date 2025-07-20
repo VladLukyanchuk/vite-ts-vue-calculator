@@ -68,16 +68,15 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { currencyOptions } from "../constants/constants";
-import { Form as FormType, Result, Series } from "../utils/types";
+import { Form as FormType, Result } from "../utils/types";
 import { useChartStore } from "../stores/ChartStore";
 import { getNumberWithSpaces } from "../utils/getNumberWithSpaces.ts";
-import { getCurrencySymbol } from "../utils/getCurrencySymbol.ts";
 
 import WhiteBlock from "./UI/WhiteBlock.vue";
 import Chart from "./UI/Chart.vue";
 import Table from "./UI/Table.vue";
 import Form from "./Form.vue";
+import { calculateCompoundInterest } from "../utils/calculateCompoundInterest.ts";
 
 const chartStore = useChartStore();
 
@@ -86,6 +85,8 @@ const result = ref<Result | null>(null);
 
 async function calculate(form: FormType) {
   result.value = calculateCompoundInterest(form);
+
+  chartStore.changeDataLabelsVisibility(form.years < 25);
 
   if (!result.value) {
     return;
@@ -147,92 +148,4 @@ const currentPercent = ref<number>(0);
 const currentInitial = ref<number>(0);
 
 const chartUpdate = ref<number>(1);
-
-function calculateCompoundInterest(form: FormType): Result | null {
-  const { initialAmount, interestAccrual, replenishments, years } = form;
-  let { sum: replenishSum, period: replenishPeriod } = replenishments;
-  const { percent, period: accrualPeriod } = interestAccrual;
-
-  const hasReplenish = replenishSum && replenishPeriod;
-
-  if (!initialAmount || !percent || !accrualPeriod || !years) {
-    return null;
-  }
-
-  const result: Result = {
-    finalBalance: initialAmount,
-    totalRefills: 0,
-    totalPercent: 0,
-    currency: "",
-    yearsArray: [],
-    series: [],
-    initialSum: form.initialAmount,
-  };
-  const refillsObject: Series = {
-    name: "Total Refills",
-    data: [],
-  };
-  const percentObject: Series = {
-    name: "Total Percent",
-    data: [],
-  };
-  const startSumObj: Series = {
-    name: "Initial Amount",
-    data: [],
-  };
-  let refillsSum = 0;
-
-  let replenishPeriodByAccrual = -1;
-  if (hasReplenish) {
-    replenishPeriodByAccrual =
-      accrualPeriod > replenishPeriod ? accrualPeriod / replenishPeriod : -1;
-  }
-
-  // Обчислення суми з основної суми та відсотків за складним процентом
-  for (let i = 0; i < years; i++) {
-    result.yearsArray.push(i + 1);
-    startSumObj.data.push(Math.round(form.initialAmount));
-
-    for (let j = 1; j <= accrualPeriod; j++) {
-      let percentForChart = 0;
-
-      const currentInterest = result.finalBalance * (percent / 100);
-      result.totalPercent += currentInterest;
-      result.finalBalance += currentInterest;
-      percentForChart += currentInterest;
-
-      if (hasReplenish && replenishPeriodByAccrual !== -1) {
-        if (Number.isInteger(j / replenishPeriodByAccrual)) {
-          refillsSum += replenishSum;
-          result.totalRefills += replenishSum;
-          refillsObject.data.push(Math.round(result.totalRefills));
-        }
-        result.totalPercent += refillsSum * (percent / 100);
-        refillsSum += refillsSum * (percent / 100);
-        percentForChart += refillsSum * (percent / 100);
-      }
-
-      if (hasReplenish && replenishPeriodByAccrual === -1) {
-        result.totalRefills += replenishSum * (replenishPeriod / accrualPeriod);
-        refillsSum += replenishSum * (replenishPeriod / accrualPeriod);
-        refillsObject.data.push(Math.round(result.totalRefills));
-        result.totalPercent += refillsSum * (percent / 100);
-        refillsSum += refillsSum * (percent / 100);
-        percentForChart += refillsSum * (percent / 100);
-      }
-
-      percentObject.data.push(Math.round(result.totalPercent));
-    }
-  }
-
-  result.finalBalance = Math.round(result.finalBalance + refillsSum);
-  result.totalRefills = Math.round(result.totalRefills);
-  result.totalPercent = Math.round(result.totalPercent);
-  result.currency = getCurrencySymbol(form.currency, currencyOptions);
-  result.series = [startSumObj, refillsObject, percentObject];
-
-  chartStore.changeDataLabelsVisibility(years < 25);
-
-  return result;
-}
 </script>
