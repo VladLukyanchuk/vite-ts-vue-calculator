@@ -42,7 +42,6 @@ export function calculateCompoundInterest(form: Form): Result | null {
       accrualPeriod > replenishPeriod ? accrualPeriod / replenishPeriod : -1;
   }
 
-  // Обчислення суми з основної суми та відсотків за складним процентом
   for (let i = 0; i < years; i++) {
     result.yearsArray.push(i + 1);
     startSumObj.data.push(Math.round(form.initialAmount));
