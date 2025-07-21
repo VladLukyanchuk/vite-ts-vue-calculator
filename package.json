@@ -7,6 +7,8 @@
     "start": "npm run dev",
     "dev": "vite",
     "test": "vitest --run",
+    "e2e:local": "npx playwright test --project=chromium",
+    "e2e:prod": "npx playwright test",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "host": "vite --host"
@@ -22,15 +24,17 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.1",
     "@types/lodash": "^4.17.0",
+    "@types/node": "^24.0.15",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/ui": "^3.0.7",
     "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^17.1.8",
     "sass": "^1.74.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "vitest": "^3.0.7",
-    "vue-tsc": "^2.0.6",
-    "happy-dom": "^17.1.8"
+    "vue-tsc": "^2.0.6"
   }
 }
